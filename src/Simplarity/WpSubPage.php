@@ -1,6 +1,8 @@
 <?php
 
-abstract class Simplarity_WpSubPage {
+namespace Simplarity;
+
+abstract class WpSubPage {
 	protected $settings_page_properties;
 
 	public function __construct( $settings_page_properties ) {

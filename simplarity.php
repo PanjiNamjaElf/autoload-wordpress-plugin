@@ -6,12 +6,15 @@ Version: 1.0.0
 License: GPL-2.0+
 */
 
+use Simplarity\Plugin;
+use Simplarity\SettingsPage;
+
 spl_autoload_register( 'simplarity_autoloader' );
 
 function simplarity_autoloader( $class_name ) {
 	if ( false !== strpos( $class_name, 'Simplarity' ) ) {
 		$classes_dir = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
-		$class_file  = str_replace( '_', DIRECTORY_SEPARATOR, $class_name ) . '.php';
+		$class_file  = str_replace( '\\', DIRECTORY_SEPARATOR, $class_name ) . '.php';
 
 		require_once $classes_dir . $class_file;
 	}
@@ -20,7 +23,7 @@ function simplarity_autoloader( $class_name ) {
 add_action( 'plugins_loaded', 'simplarity_init' ); // Hook initialization function
 
 function simplarity_init() {
-	$plugin            = new Simplarity_Plugin(); // Create container
+	$plugin            = new Plugin(); // Create container
 	$plugin['path']    = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR;
 	$plugin['url']     = plugin_dir_url( __FILE__ );
 	$plugin['version'] = '1.0.0';
@@ -35,7 +38,9 @@ function simplarity_init() {
 		'option_name'  => 'simplarity_option_name',
 	);
 
-	$plugin['settings_page'] = 'simplarity_service_settings';
+	$plugin['settings_page'] = function ( $plugin ) {
+		return new SettingsPage( $plugin['settings_page_properties'] );
+	};
 
 	$plugin->run();
 }
@@ -47,7 +52,7 @@ function simplarity_service_settings( $plugin ) {
 		return $object;
 	}
 
-	$object = new Simplarity_SettingsPage( $plugin['settings_page_properties'] );
+	$object = new SettingsPage( $plugin['settings_page_properties'] );
 
 	return $object;
 }

@@ -1,6 +1,8 @@
 <?php
 
-class Simplarity_SettingsPage extends Simplarity_WpSubPage {
+namespace Simplarity;
+
+class SettingsPage extends WpSubPage {
 
 	public function render_settings_page() {
 		$option_name   = $this->settings_page_properties['option_name'];
